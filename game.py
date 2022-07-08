@@ -46,32 +46,49 @@ for turn in turns:
     coord = (coord[0],coord[1]+dH)
     text_coord_pairs.append((font.render(str(turn)+":", True, (0,0,0)),coord))
 updates = True
-current_turn = turns.pop(0)
+current_turn = turns[0]
 scores = [0 for i in players]
 current_player = 0
 bidding_turn = True
 currentY = dH
-bids = []
+bids = [-1 for i in range(NUM_PLAYERS)]
+current_staring_player = 0
+current_last_player = NUM_PLAYERS - 1
 def calc_points(bid,result):
     if bid==result:
         return bid + 5
     elif bid > result:
         return  result - bid
     return bid - result
+turn_number = 0
+print("{} turn".format(current_turn))
+print("{} starts\n-------------".format(players[current_staring_player]))
+players_done = 0
 while running:
-    if current_player ==len(players):
+    #if current_player == current_staring_player:
+    #    print("It is {}'s turn".format(players[current_player]))
+    if players_done == NUM_PLAYERS:
         if bidding_turn:
             bidding_turn = False
         else:
             #print(turns)
-            if len(turns) ==0:
+            if len(turns) == turn_number:
                 break
-            current_turn = turns.pop(0)
+            turn_number+=1
+            current_turn = turns[turn_number]
             bidding_turn = True
             currentY+=dH
-            bids = []
-        current_player = 0
-    
+            bids = [-1 for i in range(NUM_PLAYERS)]
+            current_staring_player +=1
+            current_last_player +=1
+            if current_staring_player == NUM_PLAYERS:
+                current_staring_player = 0
+            if current_last_player == NUM_PLAYERS:
+                current_last_player = 0
+            print("{} turn".format(current_turn))
+            print("{} starts\n-------------".format(players[current_staring_player]))
+        current_player = current_staring_player
+        players_done = 0
     if updates:
         screen.fill(background_color)
         for x,y in text_coord_pairs:
@@ -87,11 +104,11 @@ while running:
                 continue
             #print(event.unicode)
             if bidding_turn:
-                if current_player == NUM_PLAYERS-1 and sum(bids)+num==turn:
+                if current_player == current_last_player and sum(bids)+1+num==turn:
                     print("Invalid BID")
                     continue
                 text_coord_pairs.append((font.render(str(num), True, (0,125,125)),(number_positions[current_player*2],currentY)))
-                bids.append(num)
+                bids[current_player] = num
             else:
                 points = calc_points(bids[current_player],num)
                 scores[current_player] += points
@@ -99,6 +116,9 @@ while running:
                 if points<0:
                     text_coord_pairs[-NUM_PLAYERS-1] =(font.render(str(bids[current_player]), True, (255,0,0)),(number_positions[current_player*2],currentY))
             current_player +=1
+            if current_player == NUM_PLAYERS:
+                current_player = 0
+            players_done +=1
             updates = True
 while running:
     if updates:
