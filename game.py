@@ -104,12 +104,6 @@ while running:
                 continue
             #print(event.unicode)
             if bidding_turn:
-                print(current_player)
-                print(current_last_player)
-                print(sum(bids)+1+num)
-                print(bids)
-                print(current_turn)
-                print("@@@@@@@@@@")
                 if current_player == current_last_player and sum(bids)+1+num==current_turn:
                     print("Invalid BID")
                     continue
