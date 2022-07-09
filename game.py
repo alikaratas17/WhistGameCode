@@ -72,9 +72,9 @@ while running:
             bidding_turn = False
         else:
             #print(turns)
+            turn_number+=1
             if len(turns) == turn_number:
                 break
-            turn_number+=1
             current_turn = turns[turn_number]
             bidding_turn = True
             currentY+=dH
@@ -104,7 +104,13 @@ while running:
                 continue
             #print(event.unicode)
             if bidding_turn:
-                if current_player == current_last_player and sum(bids)+1+num==turn:
+                print(current_player)
+                print(current_last_player)
+                print(sum(bids)+1+num)
+                print(bids)
+                print(current_turn)
+                print("@@@@@@@@@@")
+                if current_player == current_last_player and sum(bids)+1+num==current_turn:
                     print("Invalid BID")
                     continue
                 text_coord_pairs.append((font.render(str(num), True, (0,125,125)),(number_positions[current_player*2],currentY)))
