@@ -15,7 +15,29 @@ turns = turns + [1 for i in range(NUM_PLAYERS)]
 players = []
 for i in range(NUM_PLAYERS):
     players.append(input("Name of Player #{}:\t".format(i+1)))
-
+new_game_str = input("New Game (Y/N)?")
+scores = [0 for i in players]
+current_staring_player = 0
+current_last_player = NUM_PLAYERS - 1
+if "n" in new_game_str.lower():
+    start_round_num = int(input("Which round do you want to start from (0 is new game)?\t"))
+    if start_round_num ==0:
+        print("Starting a new game")
+    turns = turns[start_round_num:]
+    for i in range(start_round_num):
+        current_staring_player +=1
+        if current_staring_player > NUM_PLAYERS:
+            current_staring_player = 0
+    current_last_player = current_staring_player - 1
+    if current_last_player < 0:
+        current_last_player = NUM_PLAYERS - 1
+    i = 0
+    for player in players:
+        s = int(input("What is the score of {}?\t".format(player)))
+        scores[i] = s
+        i +=1
+    print("Game starting from {} with {} as the starting player".format(turns[0],players[current_staring_player]))
+    
 import pygame
 
 def draw_grid(screen):
@@ -47,13 +69,10 @@ for turn in turns:
     text_coord_pairs.append((font.render(str(turn)+":", True, (0,0,0)),coord))
 updates = True
 current_turn = turns[0]
-scores = [0 for i in players]
-current_player = 0
+current_player = current_staring_player
 bidding_turn = True
 currentY = dH
 bids = [-1 for i in range(NUM_PLAYERS)]
-current_staring_player = 0
-current_last_player = NUM_PLAYERS - 1
 def calc_points(bid,result):
     if bid==result:
         return bid + 5
